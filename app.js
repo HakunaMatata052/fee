@@ -9,7 +9,8 @@ app.use(bodyParser.urlencoded({
     extended: false
 }))
 //parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
 //设置跨域请求头
 app.all('*', function (req, res, next) {
@@ -21,6 +22,10 @@ app.all('*', function (req, res, next) {
     next();
 });
 
+app.get('/', function (req, res) {
+    res.header("Content-Type", "text/html;charset=utf-8");
+    res.sendFile( __dirname + "/public/" + "index.html" );
+})
 
 app.get('/get', async function (req, res) {
     const name = mm(req.query.mm);
@@ -65,8 +70,7 @@ app.post('/complete', async (req, res) => {
         msg: '请求成功4'
     })
 
-})
-
+}) 
 var server = app.listen(7000, function () {
 
     var host = server.address().address
