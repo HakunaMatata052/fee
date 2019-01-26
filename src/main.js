@@ -12,6 +12,10 @@ Vue.use(VueRouter)
 Vue.use(ElementUI);
 Vue.use(vueResource);
 
+Vue.prototype.$status = {
+  api:'http://localhost:7000'
+}
+
 const routes = [
   { path: '/', component: User },
   { path: '/admin', component: Admin }

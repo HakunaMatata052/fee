@@ -111,7 +111,7 @@ export default {
       if (customer == null) {
         customer = '';
       };
-      that.$http.get('http://192.168.0.253:9000/refresh/get.php?action=get&mm=' + mm + '&date=' + time + '&customer=' + customer).then(function (res) {
+      that.$http.get(that.$status.api+'/get/?mm=' + mm + '&date=' + time + '&customer=' + customer).then(function (res) {
         that.list = res.data.data.reverse();
         that.loading = false;
       })

@@ -77,7 +77,7 @@ export default {
       if (customer == null) {
         customer = '';
       };
-      that.$http.get('http://192.168.0.253:9000/refresh/get.php?action=get&mm=' + mm + '&date=' + '&customer=' + customer).then(function (res) {
+      that.$http.get(that.$status.api+'/get/?mm=' + mm + '&date=' + '&customer=' + customer).then(function (res) {
         that.list = res.data.data;
         that.loading = false;
       })
@@ -91,7 +91,7 @@ export default {
       var that = this;
       that.exportExcel()
       if (that.list_car.length != 0) {
-        that.$http.post('http://192.168.0.253:9000/refresh/post.php', {
+        that.$http.post(that.$status.api+'/complete', {
           data: that.list_car
         }).then(function (res) {
           that.getList(localStorage.mm);
