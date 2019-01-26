@@ -7,6 +7,7 @@ const pool = mysql.createPool(config.sql)
 // 比如 query(`select * from my_database where id = ?`, [1])
 
 let query = function( sql, values ) {
+  // console.log(sql)
   // 返回一个 Promise
   return new Promise(( resolve, reject ) => {
     pool.getConnection(function(err, connection) {
