@@ -61,6 +61,23 @@ app.post('/', async (req, res) => {
     }
 })
 
+app.post('/refresh/index.php', async (req, res) => {
+    const rows = await query(`select * from ludan WHERE uid = '${req.body.data[0].id}'`);
+    if (rows.length === 0) {
+        await query(`insert into ludan(uid,company,business,customer,qdate,xdate,qmoney,smoney,type,workload,programmer,designer,fee,date)values('${req.body.data[0].id}','${req.body.data[0].company}','${req.body.data[0].business}','${req.body.data[0].customer}','${req.body.data[0].qdate}','${req.body.data[0].xdate}','${req.body.data[0].qmoney}','${req.body.data[0].smoney}','${req.body.data[0].type}','${req.body.data[0].workload}','${req.body.data[0].programmer}','${req.body.data[0].designer}','${req.body.data[0].fee}','${req.body.data[0].feetime}')`)
+        res.json({
+            code: 0,
+            msg: '请求成功2'
+        })
+    } else {
+        await query(`update ludan set company='${req.body.data[0].company}',business='${req.body.data[0].business}',customer='${req.body.data[0].customer}',qdate='${req.body.data[0].qdate}',xdate='${req.body.data[0].xdate}',qmoney='${req.body.data[0].qmoney}',smoney='${req.body.data[0].smoney}',type='${req.body.data[0].type}',workload='${req.body.data[0].workload}',programmer='${req.body.data[0].programmer}',designer='${req.body.data[0].designer}',fee='${req.body.data[0].fee}',date='${req.body.data[0].date}' where uid='${req.body.data[0].id}'`)
+        res.json({
+            code: 0,
+            msg: '请求成功3'
+        })
+    }
+})
+
 app.post('/complete', async (req, res) => {
     for(var i=0;i<req.body.data.length;i++){
         await query(`update ludan set complete='1' where uid='${req.body.data[i].uid}'`)
@@ -71,7 +88,7 @@ app.post('/complete', async (req, res) => {
     })
 
 }) 
-var server = app.listen(7000, function () {
+var server = app.listen(9000, function () {
 
     var host = server.address().address
     var port = server.address().port
