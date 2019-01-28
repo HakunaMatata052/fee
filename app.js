@@ -17,22 +17,21 @@ app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-    res.header("X-Powered-By", ' 3.2.1')
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
 
 app.get('/', function (req, res) {
     res.header("Content-Type", "text/html;charset=utf-8");
-    res.sendFile( __dirname + "/public/" + "index.html" );
+    res.sendFile(__dirname + "/public/" + "index.html");
 })
 
 app.get('/get', async function (req, res) {
     const name = mm(req.query.mm);
     var rows;
-    if(name==''){
+    if (name == '') {
         rows = await query(`select * from ludan WHERE date Like '%${req.query.date}%' && fee != ''  && customer like '%${req.query.customer}%'`)
-    }else {
+    } else {
         rows = await query(`select * from ludan WHERE fee like '%${name}%' && complete != 1  && customer like '%${req.query.customer}%'`)
     }
     res.status("200")
@@ -45,41 +44,23 @@ app.get('/get', async function (req, res) {
 })
 
 app.post('/', async (req, res) => {
-    const rows = await query(`select * from ludan WHERE uid = '${req.body.data[0].id}'`);
-    if (rows.length === 0) {
-        await query(`insert into ludan(uid,company,business,customer,qdate,xdate,qmoney,smoney,type,workload,programmer,designer,fee,date)values('${req.body.data[0].id}','${req.body.data[0].company}','${req.body.data[0].business}','${req.body.data[0].customer}','${req.body.data[0].qdate}','${req.body.data[0].xdate}','${req.body.data[0].qmoney}','${req.body.data[0].smoney}','${req.body.data[0].type}','${req.body.data[0].workload}','${req.body.data[0].programmer}','${req.body.data[0].designer}','${req.body.data[0].fee}','${req.body.data[0].feetime}')`)
-        res.json({
-            code: 0,
-            msg: '请求成功2'
-        })
-    } else {
-        await query(`update ludan set company='${req.body.data[0].company}',business='${req.body.data[0].business}',customer='${req.body.data[0].customer}',qdate='${req.body.data[0].qdate}',xdate='${req.body.data[0].xdate}',qmoney='${req.body.data[0].qmoney}',smoney='${req.body.data[0].smoney}',type='${req.body.data[0].type}',workload='${req.body.data[0].workload}',programmer='${req.body.data[0].programmer}',designer='${req.body.data[0].designer}',fee='${req.body.data[0].fee}',date='${req.body.data[0].date}' where uid='${req.body.data[0].id}'`)
-        res.json({
-            code: 0,
-            msg: '请求成功3'
-        })
+    for (var i = 0; i < req.body.data.length; i++) {
+        const rows = await query(`select * from ludan WHERE uid = '${req.body.data[i].id}'`);
+        if (rows.length === 0) {
+            await query(`insert into ludan(uid,company,business,customer,qdate,xdate,qmoney,smoney,type,workload,programmer,designer,xgjs,fee,date)values('${req.body.data[i].id}','${req.body.data[i].company}','${req.body.data[i].business}','${req.body.data[i].customer}','${req.body.data[i].qdate}','${req.body.data[i].xdate}','${req.body.data[i].qmoney}','${req.body.data[i].smoney}','${req.body.data[i].type}','${req.body.data[i].workload}','${req.body.data[i].programmer}','${req.body.data[i].designer}','${req.body.data[i].designer}/${req.body.data[i].programmer}','${req.body.data[i].fee}','${req.body.data[i].home}')`)
+        } else {
+            await query(`update ludan set company='${req.body.data[i].company}',business='${req.body.data[i].business}',customer='${req.body.data[i].customer}',qdate='${req.body.data[i].qdate}',xdate='${req.body.data[i].xdate}',qmoney='${req.body.data[i].qmoney}',smoney='${req.body.data[i].smoney}',type='${req.body.data[i].type}',workload='${req.body.data[i].workload}',programmer='${req.body.data[i].programmer}',designer='${req.body.data[i].designer}',xgjs='${req.body.data[i].designer}/${req.body.data[i].programmer}',fee='${req.body.data[i].fee}',date='${req.body.data[i].home}' where uid='${req.body.data[i].id}'`)
+        }
     }
+    res.json({
+        code: 0,
+        msg: '请求成功3'
+    })
 })
 
-app.post('/refresh/index.php', async (req, res) => {
-    const rows = await query(`select * from ludan WHERE uid = '${req.body.data[0].id}'`);
-    if (rows.length === 0) {
-        await query(`insert into ludan(uid,company,business,customer,qdate,xdate,qmoney,smoney,type,workload,programmer,designer,fee,date)values('${req.body.data[0].id}','${req.body.data[0].company}','${req.body.data[0].business}','${req.body.data[0].customer}','${req.body.data[0].qdate}','${req.body.data[0].xdate}','${req.body.data[0].qmoney}','${req.body.data[0].smoney}','${req.body.data[0].type}','${req.body.data[0].workload}','${req.body.data[0].programmer}','${req.body.data[0].designer}','${req.body.data[0].fee}','${req.body.data[0].feetime}')`)
-        res.json({
-            code: 0,
-            msg: '请求成功2'
-        })
-    } else {
-        await query(`update ludan set company='${req.body.data[0].company}',business='${req.body.data[0].business}',customer='${req.body.data[0].customer}',qdate='${req.body.data[0].qdate}',xdate='${req.body.data[0].xdate}',qmoney='${req.body.data[0].qmoney}',smoney='${req.body.data[0].smoney}',type='${req.body.data[0].type}',workload='${req.body.data[0].workload}',programmer='${req.body.data[0].programmer}',designer='${req.body.data[0].designer}',fee='${req.body.data[0].fee}',date='${req.body.data[0].date}' where uid='${req.body.data[0].id}'`)
-        res.json({
-            code: 0,
-            msg: '请求成功3'
-        })
-    }
-})
 
 app.post('/complete', async (req, res) => {
-    for(var i=0;i<req.body.data.length;i++){
+    for (var i = 0; i < req.body.data.length; i++) {
         await query(`update ludan set complete='1' where uid='${req.body.data[i].uid}'`)
     }
     res.json({
@@ -87,14 +68,9 @@ app.post('/complete', async (req, res) => {
         msg: '请求成功4'
     })
 
-}) 
-var server = app.listen(9000, function () {
-
-    var host = server.address().address
-    var port = server.address().port
-
-    console.log("应用实例，访问地址为 http://%s:%s", host, port)
-
+})
+app.listen(9000,function(){
+    console.log('服务器已开启')
 })
 
 function mm(mm) {
