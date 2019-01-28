@@ -13,7 +13,7 @@ Vue.use(ElementUI);
 Vue.use(vueResource);
 
 Vue.prototype.$status = {
-  api:'http://localhost:7000'
+  api:'http://192.168.0.253:9000'
 }
 
 const routes = [

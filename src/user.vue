@@ -12,17 +12,18 @@
       @selection-change="handleSelectionChange"
       v-loading="loading"
     >
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="fee" label="前端" show-overflow-tooltip sortable></el-table-column>
-      <el-table-column prop="company" label="分公司" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="programmer" label="相关技术" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="business" label="商务" show-overflow-tooltip></el-table-column>
+      <el-table-column type="selection" width="55"></el-table-column>      
+      <el-table-column type="index" width="50"></el-table-column>
+      <el-table-column prop="fee" label="前端" width="80" show-overflow-tooltip sortable></el-table-column>
+      <el-table-column prop="company" label="分公司" width="80" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="business" label="商务" width="80" show-overflow-tooltip></el-table-column>
       <el-table-column prop="customer" label="公司名称" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="qdate" label="签单时间" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="xdate" label="下单时间" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="qmoney" label="签单金额 " show-overflow-tooltip></el-table-column>
-      <el-table-column prop="smoney" label="实到金额" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="type" label="类型" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="qdate" label="签单时间" width="100" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="xdate" label="下单时间" width="100" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="qmoney" label="签单金额" width="100" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="smoney" label="实到金额" width="100" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="type" label="类型" width="100" show-overflow-tooltip></el-table-column>
     </el-table>
     <br>
     <el-button type="success" @click="submit" class="submit">提交</el-button>

@@ -2,11 +2,7 @@
   <div class="app">
     <div class="search">
       <el-select v-model="search.year" placeholder="请选择" class="inline-input">
-        <el-option label="2019" value="2019"></el-option>
-        <el-option label="2018" value="2018"></el-option>
-        <el-option label="2017" value="2017"></el-option>
-        <el-option label="2016" value="2016"></el-option>
-        <el-option label="2015" value="2015"></el-option>
+        <el-option label="2019" value="19"></el-option>
       </el-select>
       <el-select v-model="search.month" placeholder="请选择" class="inline-input">
         <el-option label="12月" value="12"></el-option>
@@ -36,14 +32,14 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="fee" label="前端" width="80" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="company" label="分公司" width="80" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="programmer" label="相关技术" width="120" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip></el-table-column>
       <el-table-column prop="business" label="商务" width="80" show-overflow-tooltip></el-table-column>
       <el-table-column prop="customer" label="公司名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qdate" label="签单时间" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="xdate" label="下单时间" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qmoney" label="签单金额 " width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="smoney" label="实到金额" width="100" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="type" label="类型" width="80" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="type" label="类型" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="date" label="分单时间" width="120" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="complete" label="状态" width="100" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -79,12 +75,16 @@ export default {
   },
   created() {
     var that = this;
-    that.search.year = new Date().getFullYear();
-    that.search.month = new Date().getMonth() + 1;
+    var myDate = new Date();
+    var year = myDate.getYear()
+    var year = year < 2000 ? year + 1900 : year
+    var yy = year.toString().substr(2, 2);
+    that.search.year = yy;
+    that.search.month = myDate.getMonth() + 1;
     if (localStorage.mm == null || localStorage.mm.length == 0) {
       that.open()
     } else {
-      that.getList(localStorage.mm, that.search.year + '-' + that.search.month + '-');
+      that.getList(localStorage.mm, that.search.year + '.' + that.search.month + '.');
     }
 
   },
@@ -98,7 +98,7 @@ export default {
         value
       }) => {
         localStorage.setItem('mm', value);
-        that.getList(localStorage.mm, that.search.year + '-' + that.search.month + '-');
+        that.getList(localStorage.mm, that.search.year + '.' + that.search.month + '.');
       }).catch(() => {
         this.$message({
           type: 'error',
@@ -111,7 +111,7 @@ export default {
       if (customer == null) {
         customer = '';
       };
-      that.$http.get(that.$status.api+'/get/?mm=' + mm + '&date=' + time + '&customer=' + customer).then(function (res) {
+      that.$http.get(that.$status.api + '/get/?mm=' + mm + '&date=' + time + '&customer=' + customer).then(function (res) {
         that.list = res.data.data.reverse();
         that.loading = false;
       })
@@ -122,7 +122,7 @@ export default {
       if (that.search.customer.length > 0) {
         that.getList(localStorage.mm, '', that.search.customer)
       } else {
-        that.getList(localStorage.mm, that.search.year + '-' + that.search.month + '-')
+        that.getList(localStorage.mm, that.search.year + '.' + that.search.month + '.')
       }
     },
     drawLine() {
