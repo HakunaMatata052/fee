@@ -12,7 +12,7 @@
       @selection-change="handleSelectionChange"
       v-loading="loading"
     >
-      <el-table-column type="selection" width="55"></el-table-column>      
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="fee" label="前端" width="80" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="company" label="分公司" width="80" show-overflow-tooltip></el-table-column>
@@ -23,7 +23,28 @@
       <el-table-column prop="xdate" label="下单时间" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qmoney" label="签单金额" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="smoney" label="实到金额" width="100" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="type" label="类型" width="100" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="type" label="类型" width="110" show-overflow-tooltip></el-table-column>
+      <el-table-column label="操作" width="110">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="success"
+            v-if="scope.row.html==null"
+            @click="jump(scope.row.customer,scope.row.fee)"
+          >上传静态</el-button>
+          <el-tooltip
+              class="item"
+              effect="dark"
+              :content="fortime(Number(scope.row.html))"
+              placement="top-start"
+               v-else
+            >
+          <el-tag type="success">
+            静态已上传
+          </el-tag>
+          </el-tooltip>
+        </template>
+      </el-table-column>
     </el-table>
     <br>
     <el-button type="success" @click="submit" class="submit">提交</el-button>
@@ -41,7 +62,7 @@ export default {
         month: "",
         customer: ''
       },
-      loading:true
+      loading: true
     }
   },
   created() {
@@ -78,7 +99,7 @@ export default {
       if (customer == null) {
         customer = '';
       };
-      that.$http.get(that.$status.api+'/get/?mm=' + mm + '&date=' + '&customer=' + customer).then(function (res) {
+      that.$http.get(that.$status.api + '/get/?mm=' + mm + '&date=' + '&customer=' + customer).then(function (res) {
         that.list = res.data.data;
         that.loading = false;
       })
@@ -92,7 +113,7 @@ export default {
       var that = this;
       that.exportExcel()
       if (that.list_car.length != 0) {
-        that.$http.post(that.$status.api+'/complete', {
+        that.$http.post(that.$status.api + '/complete', {
           data: that.list_car
         }).then(function (res) {
           that.getList(localStorage.mm);
@@ -252,6 +273,21 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
+    jump(customer, fee) {
+      window.open('http://192.168.0.253:5000/#/' + customer + '/' + fee);
+    },
+    fortime(val) {
+      console.log(val)
+      var time = new Date(val);
+      var y = time.getFullYear();
+      var m = time.getMonth() + 1;
+      var d = time.getDate();
+      var h = time.getHours();
+      var mm = time.getMinutes();
+      var s = time.getSeconds();
+      return y + '-' + this.add(m) + '-' + this.add(d) + ' ' + this.add(h) + ':' + this.add(mm) + ':' + this.add(s);
+    },
+    add(m) { return m < 10 ? '0' + m : m }
   }
 }
 </script>

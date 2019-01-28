@@ -41,6 +41,25 @@
       <el-table-column prop="smoney" label="实到金额" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="type" label="类型" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="date" label="分单时间" width="120" show-overflow-tooltip sortable></el-table-column>
+      <el-table-column label="静态" width="110">
+        <template slot-scope="scope">
+          <el-tag
+            size="mini"
+            v-if="scope.row.html==null"
+          >未上传</el-tag>
+          <el-tooltip
+              class="item"
+              effect="dark"
+              :content="fortime(Number(scope.row.html))"
+              placement="top-start"
+               v-else
+            >
+          <el-tag type="success">
+            静态已上传
+          </el-tag>
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column prop="complete" label="状态" width="100" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-tag type="danger" v-if="scope.row.complete == 0">未传</el-tag>
@@ -285,7 +304,18 @@ export default {
         }
       }
       return newArr;
-    }
+    },    
+    fortime(val) {
+      var time = new Date(val);
+      var y = time.getFullYear();
+      var m = time.getMonth() + 1;
+      var d = time.getDate();
+      var h = time.getHours();
+      var mm = time.getMinutes();
+      var s = time.getSeconds();
+      return y + '-' + this.add(m) + '-' + this.add(d) + ' ' + this.add(h) + ':' + this.add(mm) + ':' + this.add(s);
+    },
+    add(m) { return m < 10 ? '0' + m : m }
 
 
   }
