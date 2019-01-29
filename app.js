@@ -58,7 +58,7 @@ app.post('/', async (req, res) => {
     })
 })
 
-
+//生成工作量表Excel
 app.post('/complete', async (req, res) => {
     for (var i = 0; i < req.body.data.length; i++) {
         await query(`update ludan set complete='1' where uid='${req.body.data[i].uid}'`)
@@ -69,7 +69,18 @@ app.post('/complete', async (req, res) => {
     })
 
 })
-app.listen(9000,function(){
+
+//更新上传时间
+app.post('/html', async (req, res) => {
+    await query(`update ludan set html='${req.body.addtime}' where customer='${req.body.companyname}' && fee ='${req.body.fee}'`)        
+    res.json({
+        code: 0,
+        msg: '请求成功5'
+    })
+})
+
+
+app.listen(9001,function(){
     console.log('服务器已开启')
 })
 
@@ -87,7 +98,7 @@ function mm(mm) {
             return '冯燕'
         case '950410':
             return '王卓';
-        case 'hakunamatata':
+        case 'hakunamatata52':
             return ''
         default:
             return '你猜我是谁'
