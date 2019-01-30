@@ -32,7 +32,7 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="fee" label="前端" width="80" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="company" label="分公司" width="80" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="business" label="商务" width="80" show-overflow-tooltip></el-table-column>
       <el-table-column prop="customer" label="公司名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qdate" label="签单时间" width="100" show-overflow-tooltip></el-table-column>
@@ -72,6 +72,7 @@
         <div id="myChart" :style="{width: '50%', height: '300px'}"></div>
         <div id="myChart2" :style="{width: '50%', height: '300px'}"></div>
         <div id="myChart3" :style="{width: '100%', height: '300px'}"></div>
+        <div id="myChart4" :style="{width: '100%', height: '300px'}"></div>
       </div>
     </el-dialog>
   </div>
@@ -148,17 +149,20 @@ export default {
       var data = this.list;
       let name = [];
       let tongjiDate = [];
+      let tongjiDesigner = [];
       for (var i = 0; i < data.length; i++) {
         name.push(data[i].fee)
         tongjiDate.push(data[i].date)
+        tongjiDesigner.push(data[i].designer)
       }
       name = this.arrCheck(name);
       tongjiDate = this.arrCheck(tongjiDate)
-      console.log(name)
+      tongjiDesigner = this.arrCheck(tongjiDesigner)
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById('myChart'))
       let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
       let myChart3 = this.$echarts.init(document.getElementById('myChart3'))
+      let myChart4 = this.$echarts.init(document.getElementById('myChart4'))
       // 绘制图表
       myChart.setOption({
         tooltip: {
@@ -171,7 +175,7 @@ export default {
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],
-            data: name,
+            data: tongjiDesigner,
             itemStyle: {
               emphasis: {
                 shadowBlur: 10,
@@ -275,6 +279,57 @@ export default {
             type: 'bar',
             barWidth: '60%',
             data: name5,
+            label: {
+              normal: {
+                show: true,
+                position: 'top'
+              }
+            },
+          }
+        ]
+      });
+
+      let name6 = [];
+      let name7 = [];
+      for (var i = 0; i < tongjiDesigner.length; i++) {
+        name6.push(tongjiDesigner[i].name)
+        name7.push(tongjiDesigner[i].value)
+      }
+      // 绘制图表
+      myChart4.setOption({
+        color: ['#f00'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: name6,
+            axisTick: {
+              alignWithLabel: true
+            },
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '数量',
+            type: 'bar',
+            barWidth: '60%',
+            data: name7,
             label: {
               normal: {
                 show: true,

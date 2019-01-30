@@ -16,7 +16,7 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="fee" label="前端" width="80" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="company" label="分公司" width="80" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="business" label="商务" width="80" show-overflow-tooltip></el-table-column>
       <el-table-column prop="customer" label="公司名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qdate" label="签单时间" width="100" show-overflow-tooltip></el-table-column>
@@ -28,20 +28,18 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            type="success"
+            type="primary"
             v-if="scope.row.html==null"
             @click="jump(scope.row.customer,scope.row.fee)"
           >上传静态</el-button>
           <el-tooltip
-              class="item"
-              effect="dark"
-              :content="fortime(Number(scope.row.html))"
-              placement="top-start"
-               v-else
-            >
-          <el-tag type="success">
-            静态已上传
-          </el-tag>
+            class="item"
+            effect="dark"
+            :content="fortime(Number(scope.row.html))"
+            placement="top-start"
+            v-else
+          >
+            <el-tag type="success">静态已上传</el-tag>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -153,10 +151,6 @@ export default {
       }
       var data = {
         "title": [{
-          "value": "切图",
-          "type": "ROW_HEADER_HEADER",
-          "datatype": "string"
-        }, {
           "value": "分公司",
           "type": "ROW_HEADER_HEADER",
           "datatype": "string"
@@ -231,10 +225,21 @@ export default {
       //设置数据  
       for (var i = 0; i < arrData.length; i++) {
         var row = "<tr>";
-        for (var index in arrData[i]) {
-          var value = arrData[i][index].value === "." ? "" : arrData[i][index].value;
-          row += '<td style="font-size:12pt">' + value + '</td>';
-        }
+
+        row += '<td style="font-size:12pt">' + arrData[i][1].value + '</td>';
+        row += '<td style="font-size:12pt">' + arrData[i][16].value + '</td>';
+        row += '<td style="font-size:12pt">' + arrData[i][2].value + '</td>';
+        row += '<td style="font-size:12pt">' + arrData[i][3].value + '</td>';
+        row += '<td style="font-size:12pt">' + arrData[i][4].value + '</td>';
+        row += '<td style="font-size:12pt">' + arrData[i][5].value + '</td>';
+        row += '<td style="font-size:12pt">' + arrData[i][6].value + '</td>';
+        row += '<td style="font-size:12pt">' + arrData[i][7].value + '</td>';
+        row += '<td style="font-size:12pt"></td>';
+        row += '<td style="font-size:12pt">' + arrData[i][8].value + '</td>';
+        row += '<td style="font-size:12pt"></td>';
+        row += '<td style="font-size:12pt"></td>';
+        row += '<td style="font-size:12pt"></td>';
+        row += '<td style="font-size:12pt"></td>';
         excel += row + "</tr>";
       }
       excel += "</table>";
@@ -274,10 +279,11 @@ export default {
       document.body.removeChild(link);
     },
     jump(customer, fee) {
-      window.open('http://192.168.0.253:5000/#/' + customer + '/' + fee);
+      this.$router.push({
+        path: `${customer}/${fee}`
+      })
     },
     fortime(val) {
-      console.log(val)
       var time = new Date(val);
       var y = time.getFullYear();
       var m = time.getMonth() + 1;
