@@ -62,7 +62,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="统计" :visible.sync="dialogTableVisible" @opened="drawLine">
+    <el-dialog title="统计" :visible.sync="dialogTableVisible" @opened="drawLine" width="80%">
       <div style="display:flex;flex-wrap:wrap;">
         <div id="myChart" :style="{width: '50%', height: '300px'}"></div>
         <div id="myChart2" :style="{width: '50%', height: '300px'}"></div>
@@ -141,6 +141,7 @@ export default {
       }
     },
     drawLine() {
+      var that = this;
       var data = this.list;
       let name = [];
       let tongjiDate = [];
@@ -153,6 +154,11 @@ export default {
       name = this.arrCheck(name);
       tongjiDate = this.arrCheck(tongjiDate)
       tongjiDesigner = this.arrCheck(tongjiDesigner)
+
+      //排序
+      name.sort(that.numSort)
+      tongjiDate.sort(that.timeSort);
+      tongjiDesigner.sort(that.numSort)
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById('myChart'))
       let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
@@ -235,23 +241,10 @@ export default {
 
       let name4 = [];
       let name5 = [];
-      tongjiDate.sort(function (a, b) {
-        var x = a.name.split('.')[1];
-        var y = a.name.split('.')[2];
-
-        var x1 = b.name.split('.')[1];
-        var y1 = b.name.split('.')[2];
-        if (x - x1 > 0) {
-          return x - x1
-        } else {
-          return y - y1
-        }
-      });
       for (var i = 0; i < tongjiDate.length; i++) {
         name4.push(tongjiDate[i].name)
         name5.push(tongjiDate[i].value)
       }
-      console.log(tongjiDate)
       // 绘制图表
       myChart3.setOption({
         color: ['#3398DB'],
@@ -299,6 +292,7 @@ export default {
 
       let name6 = [];
       let name7 = [];
+
       for (var i = 0; i < tongjiDesigner.length; i++) {
         name6.push(tongjiDesigner[i].name)
         name7.push(tongjiDesigner[i].value)
@@ -378,9 +372,13 @@ export default {
       var s = time.getSeconds();
       return y + '-' + this.add(m) + '-' + this.add(d) + ' ' + this.add(h) + ':' + this.add(mm) + ':' + this.add(s);
     },
-    add(m) { return m < 10 ? '0' + m : m }
-
-
+    add(m) { return m < 10 ? '0' + m : m },
+    timeSort(a, b) {
+      return a.name.split('.')[2] - b.name.split('.')[2]
+    },
+    numSort(a, b) {
+      return b.value - a.value
+    }
   }
 }
 </script>
