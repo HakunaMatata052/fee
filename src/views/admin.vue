@@ -43,20 +43,15 @@
       <el-table-column prop="date" label="分单时间" width="120" show-overflow-tooltip sortable></el-table-column>
       <el-table-column label="静态" width="110">
         <template slot-scope="scope">
-          <el-tag
-            size="mini"
-            v-if="scope.row.html==null"
-          >未上传</el-tag>
+          <el-tag size="mini" v-if="scope.row.html==null">未上传</el-tag>
           <el-tooltip
-              class="item"
-              effect="dark"
-              :content="fortime(Number(scope.row.html))"
-              placement="top-start"
-               v-else
-            >
-          <el-tag type="success">
-            静态已上传
-          </el-tag>
+            class="item"
+            effect="dark"
+            :content="fortime(Number(scope.row.html))"
+            placement="top-start"
+            v-else
+          >
+            <el-tag type="success">静态已上传</el-tag>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -240,10 +235,23 @@ export default {
 
       let name4 = [];
       let name5 = [];
+      tongjiDate.sort(function (a, b) {
+        var x = a.name.split('.')[1];
+        var y = a.name.split('.')[2];
+
+        var x1 = b.name.split('.')[1];
+        var y1 = b.name.split('.')[2];
+        if (x - x1 > 0) {
+          return x - x1
+        } else {
+          return y - y1
+        }
+      });
       for (var i = 0; i < tongjiDate.length; i++) {
         name4.push(tongjiDate[i].name)
         name5.push(tongjiDate[i].value)
       }
+      console.log(tongjiDate)
       // 绘制图表
       myChart3.setOption({
         color: ['#3398DB'],
@@ -359,7 +367,7 @@ export default {
         }
       }
       return newArr;
-    },    
+    },
     fortime(val) {
       var time = new Date(val);
       var y = time.getFullYear();
