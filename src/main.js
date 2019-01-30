@@ -10,7 +10,7 @@ Vue.use(ElementUI);
 Vue.use(vueResource);
 
 Vue.prototype.$status = {
-  api:'http://192.168.0.253:9000'
+  api:'http://192.168.0.253:5000'
 }
 
 new Vue({

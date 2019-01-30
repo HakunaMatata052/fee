@@ -18,7 +18,7 @@
           <el-col :span="4">
             <el-upload
               class="upload"
-              action="http://192.168.0.253:9000/upload"
+              action="http://192.168.0.253:5000/upload"
               accept="application/x-zip-compressed"
               :before-upload="beforeUpload"
               :on-success="onSuccess"
@@ -113,12 +113,12 @@ export default {
         if (valid) {
           this.$refs.button.loading = true;
           localStorage.setItem("author", that.ruleForm.author);
-          that.$http.post('http://192.168.0.253:5000/api/save.ashx', {
+          that.$http.post('http://btoesucai.dongliwuxianjituan.top/api/save.ashx', {
             author: that.ruleForm.author,
             companyname: that.ruleForm.companyname,
             xgturl: that.ruleForm.xgturl,
             downurl: that.ruleForm.downurl,
-            url: "http://192.168.0.253:9000" + that.ruleForm.downurl
+            url: "http://192.168.0.253:5000/" + that.ruleForm.downurl
           }).then(function (res) {
             if (res.data.code == 0) {
               that.$refs.button.loading = true;
@@ -131,7 +131,7 @@ export default {
               };
               that.$refs.uploadHtml.clearFiles();
               if (that.$route.params.customer && that.$route.params.fee) {
-                that.$http.post('http://192.168.0.253:9000/html/', {
+                that.$http.post('http://192.168.0.253:5000/html/', {
                   fee: that.$route.params.fee,
                   companyname: that.$route.params.customer,
                   addtime: new Date().getTime()
@@ -269,7 +269,7 @@ export default {
     },
     del(path) {
       var that = this;
-      that.$http.post('http://192.168.0.253:9000/upload/del', {
+      that.$http.post('http://192.168.0.253:5000/upload/del', {
         url: path
       }).then((res) => {
       })
