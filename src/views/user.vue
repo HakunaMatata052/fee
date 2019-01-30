@@ -30,7 +30,7 @@
             size="mini"
             type="primary"
             v-if="scope.row.html==null"
-            @click="jump(scope.row.customer,scope.row.fee)"
+            @click="jump(scope.row.uid,scope.row.customer,scope.row.fee)"
           >上传静态</el-button>
           <el-tooltip
             class="item"
@@ -278,9 +278,9 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
-    jump(customer, fee) {
+    jump(uid,customer, fee) {
       this.$router.push({
-        path: `${customer}/${fee}`
+        path: `${uid}/${customer}/${fee}`
       })
     },
     fortime(val) {

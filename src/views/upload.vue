@@ -132,12 +132,13 @@ export default {
               that.$refs.uploadHtml.clearFiles();
               if (that.$route.params.customer && that.$route.params.fee) {
                 that.$http.post('http://192.168.0.253:5000/html/', {
+                  uid:that.$route.params.uid,
                   fee: that.$route.params.fee,
                   companyname: that.$route.params.customer,
                   addtime: new Date().getTime()
                 }).then(function () {
                   that.$router.push({
-                    path: `${customer}/${fee}`
+                    path: '/'
                   })
                 })
               }

@@ -17,7 +17,7 @@ const router = new VueRouter({
     component: admin
   },
   {
-    path: '/:customer/:fee',
+    path: '/:uid/:customer/:fee',
     component: upload
   }]
 })
