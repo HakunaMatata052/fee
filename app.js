@@ -1,16 +1,41 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var query = require('./query.js');
+var archiver = require('archiver'); //zip解压
+var multer = require('multer'); //文件上传
+var dateFormat = require("format-datetime"); //格式化日期
+var fs = require("fs"); //文件I/O
+var unzip = require("unzip2"); //zip解压
+var query = require('./query.js'); //数据库查询
+var rmdir = require('./rmdir.js'); //数据库查询
 
 var app = express();
 //只要加入这个配置，在req请求对象上会多出来一个属性
 //parse application/x-www-form-urlencoded
+app.use(bodyParser.json({
+    limit: '6mb'
+}));
 app.use(bodyParser.urlencoded({
-    extended: false
-}))
-//parse application/json
-app.use(bodyParser.json());
+    limit: '6mb',
+    extended: true
+}));
+
+app.use('/uploads',express.static('uploads'))
 app.use(express.static('public'));
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads')  //保存文件夹的路径
+    },
+    filename: function (req, file, cb) {
+        cb(null, dateFormat(new Date(), "yyyyMMddHHmmss") + '.zip')  //修改文件名
+    }
+})
+
+var upload = multer({
+    storage: storage
+})
+
+
 
 //设置跨域请求头
 app.all('*', function (req, res, next) {
@@ -72,15 +97,72 @@ app.post('/complete', async (req, res) => {
 
 //更新上传时间
 app.post('/html', async (req, res) => {
-    await query(`update ludan set html='${req.body.addtime}' where customer='${req.body.companyname}' && fee ='${req.body.fee}'`)        
+    await query(`update ludan set html='${req.body.addtime}' where customer='${req.body.companyname}' && fee ='${req.body.fee}'`)
     res.json({
         code: 0,
         msg: '请求成功5'
     })
 })
 
+app.post('/upload', upload.any(), (req, res) => {
+    // fs.createReadStream(req.files[0].path).pipe(unzip.Extract({path: req.files[0].path.split('.')[0]}))  //解压
+    res.json({
+        code: 0,
+        msg: '请求成功6',
+        data:req.files[0]
+    });
+})
 
-app.listen(9001,function(){
+app.post('/save',function(req,res){
+    
+
+    var http = require('http');
+    var querystring = require('querystring');
+     
+    var contents = querystring.stringify(req.body);
+    console.log(req.body)
+     
+    var options = {
+        host:'192.168.0.253',
+        port:'5000',
+        path:'/api/save.ashx',
+        method:'POST',
+        headers:{
+            'Content-Type':'text/html',
+            'Content-Length':contents.length
+        }
+    }
+     
+    var req = http.request(options, function(res){
+        res.setEncoding('utf8');
+        res.on('data',function(data){
+            console.log("data:",data);   //一段html代码
+        });
+    });
+     
+    req.write(contents);
+    req.end;
+
+})
+
+
+app.post('/upload/del', (req, res) => {
+    // console.log(__dirname+'/'+req.body.url)
+    rmdir(__dirname+'/'+req.body.url,function(){
+        res.json({
+            code: 0,
+            msg: '请求成功7'
+        })
+    })
+})
+
+
+app.get('/uploads/:id/html', (req, res) => {
+    res.header("Content-Type", "text/html;charset=utf-8");
+    res.sendFile(__dirname + "/uploads/" +req.params.id+ "/html/index.html");
+})
+
+app.listen(9000, function () {
     console.log('服务器已开启')
 })
 
