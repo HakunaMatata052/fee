@@ -1,10 +1,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var archiver = require('archiver'); //zip解压
+// var archiver = require('archiver'); //zip解压
 var multer = require('multer'); //文件上传
 var dateFormat = require("format-datetime"); //格式化日期
-var fs = require("fs"); //文件I/O
-var unzip = require("unzip2"); //zip解压
+// var fs = require("fs"); //文件I/O
+// var unzip = require("unzip2"); //zip解压
 var query = require('./query.js'); //数据库查询
 var rmdir = require('./rmdir.js'); //数据库查询
 
@@ -71,12 +71,17 @@ app.get('/get', async function (req, res) {
 app.post('/', async (req, res) => {
     for (var i = 0; i < req.body.data.length; i++) {
         const rows = await query(`select * from ludan WHERE uid = '${req.body.data[i].id}'`);
+        if(req.body.data[i].type=='WJDH双模'){
+            req.body.data[i].type='万(前)';
+        }else if(req.body.data[i].type=='常规'){
+            req.body.data[i].type='常';
+        }
         if (rows.length === 0) {
             await query(`insert into ludan(uid,company,business,customer,qdate,xdate,qmoney,smoney,type,workload,programmer,designer,xgjs,fee,date)values('${req.body.data[i].id}','${req.body.data[i].company}','${req.body.data[i].business}','${req.body.data[i].customer}','${req.body.data[i].qdate}','${req.body.data[i].xdate}','${req.body.data[i].qmoney}','${req.body.data[i].smoney}','${req.body.data[i].type}','${req.body.data[i].workload}','${req.body.data[i].programmer}','${req.body.data[i].designer}','${req.body.data[i].designer}/${req.body.data[i].programmer}','${req.body.data[i].fee}','${req.body.data[i].home}')`)
         } else {
             await query(`update ludan set company='${req.body.data[i].company}',business='${req.body.data[i].business}',customer='${req.body.data[i].customer}',qdate='${req.body.data[i].qdate}',xdate='${req.body.data[i].xdate}',qmoney='${req.body.data[i].qmoney}',smoney='${req.body.data[i].smoney}',type='${req.body.data[i].type}',workload='${req.body.data[i].workload}',programmer='${req.body.data[i].programmer}',designer='${req.body.data[i].designer}',xgjs='${req.body.data[i].designer}/${req.body.data[i].programmer}',fee='${req.body.data[i].fee}',date='${req.body.data[i].home}' where uid='${req.body.data[i].id}'`)
         }
-    }
+    };
     res.json({
         code: 0,
         msg: '请求成功3'
@@ -97,7 +102,7 @@ app.post('/complete', async (req, res) => {
 
 //更新上传时间
 app.post('/html', async (req, res) => {
-    await query(`update ludan set html='${req.body.addtime}' where customer='${req.body.companyname}' && fee ='${req.body.fee}'`)
+    await query(`update ludan set html='${req.body.addtime}' where uid='${req.body.uid}'`)
     res.json({
         code: 0,
         msg: '请求成功5'
@@ -112,39 +117,6 @@ app.post('/upload', upload.any(), (req, res) => {
         data:req.files[0]
     });
 })
-
-app.post('/save',function(req,res){
-    
-
-    var http = require('http');
-    var querystring = require('querystring');
-     
-    var contents = querystring.stringify(req.body);
-    console.log(req.body)
-     
-    var options = {
-        host:'192.168.0.253',
-        port:'5000',
-        path:'/api/save.ashx',
-        method:'POST',
-        headers:{
-            'Content-Type':'text/html',
-            'Content-Length':contents.length
-        }
-    }
-     
-    var req = http.request(options, function(res){
-        res.setEncoding('utf8');
-        res.on('data',function(data){
-            console.log("data:",data);   //一段html代码
-        });
-    });
-     
-    req.write(contents);
-    req.end;
-
-})
-
 
 app.post('/upload/del', (req, res) => {
     // console.log(__dirname+'/'+req.body.url)
@@ -162,7 +134,7 @@ app.get('/uploads/:id/html', (req, res) => {
     res.sendFile(__dirname + "/uploads/" +req.params.id+ "/html/index.html");
 })
 
-app.listen(9000, function () {
+app.listen(5000, function () {
     console.log('服务器已开启')
 })
 
