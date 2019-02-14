@@ -6,6 +6,8 @@
     "express": "^4.16.4",
     "multer": "^1.4.1",
     "node-windows": "^0.1.14",
-    "unzip2": "^0.2.5"
+    "unzip2": "^0.2.5",
+    "format-datetime": "^1.0.2",
+    "mysql": "^2.16.0"
   }
 }
