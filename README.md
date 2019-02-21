@@ -20,3 +20,10 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 后台在php分支里，需要先新建数据库
 
 改为nodejs后台，在nodejs分支里
+
+# 界面截图
+![](https://dobby.me/images/fee.jpg)
+
+![](https://dobby.me/images/uploadhtml.jpg)
+
+![](https://dobby.me/images/tongji.jpg)
