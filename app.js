@@ -152,6 +152,10 @@ function mm(mm) {
             return '冯燕'
         case '950410':
             return '王卓';
+        case 'swx950925':
+            return '宋文星';
+        case 'wyt123456':
+            return '魏永涛';
         case 'hakunamatata52':
             return ''
         default:
