@@ -16,12 +16,13 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="fee" label="前端" width="80" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="company" label="分公司" width="80" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip sortable></el-table-column>
+      <el-table-column prop="designer" label="设计" width="80" show-overflow-tooltip sortable></el-table-column>
+      <el-table-column prop="programmer" label="程序" width="80" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="business" label="商务" width="80" show-overflow-tooltip></el-table-column>
       <el-table-column prop="customer" label="公司名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qdate" label="签单时间" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="xdate" label="下单时间" width="100" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="qmoney" label="签单金额" width="100" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="qmoney" label="签单金额" width="80" show-overflow-tooltip></el-table-column>
       <el-table-column prop="smoney" label="实到金额" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="type" label="类型" width="110" show-overflow-tooltip></el-table-column>
       <el-table-column label="操作" width="110">
@@ -109,13 +110,13 @@ export default {
     },
     submit() {
       var that = this;
-      that.exportExcel()
       if (that.list_car.length != 0) {
         that.$http.post(that.$status.api + '/complete', {
           data: that.list_car
         }).then(function (res) {
           that.getList(localStorage.mm);
         })
+       that.exportExcel()
       } else {
         alert('没有选择任何东西')
       }
@@ -151,18 +152,26 @@ export default {
       }
       var data = {
         "title": [{
+          "value": "编号",
+          "type": "ROW_HEADER_HEADER",
+          "datatype": "string"
+        }, {
           "value": "分公司",
           "type": "ROW_HEADER_HEADER",
           "datatype": "string"
-        }, {
-          "value": "相关技术",
-          "type": "ROW_HEADER_HEADER",
-          "datatype": "string"
-        }, {
+        },{
           "value": "商务",
           "type": "ROW_HEADER_HEADER",
           "datatype": "string"
-        }, {
+        },  {
+          "value": "设计",
+          "type": "ROW_HEADER_HEADER",
+          "datatype": "string"
+        },{
+          "value": "程序",
+          "type": "ROW_HEADER_HEADER",
+          "datatype": "string"
+        },{
           "value": "公司名称",
           "type": "ROW_HEADER_HEADER",
           "datatype": "string"
@@ -209,37 +218,39 @@ export default {
         }],
         "data": newdata
       }
-      this.JSONToExcelConvertor(data.data, '下单表', data.title);
+      this.JSONToExcelConvertor(data.data, this.list_car[0].fee+(new Date().getMonth()+1)+'月工作量表', data.title,this.list_car[0].fee);
     },
-    JSONToExcelConvertor(JSONData, FileName, ShowLabel) { //导出excel表格文件
+    JSONToExcelConvertor(JSONData, FileName, ShowLabel,PresenName) { //导出excel表格文件
       //先转化json  
       var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
-      var excel = '<table>';
+      var excel = '<table style="border-collapse: collapse;">';
       //设置表头  
+      excel+='<tr style="height: 25px;"><td colspan="12" style="font-weight: bold;">动力无限技术___'+PresenName+'___'+new Date().getFullYear()+'年___'+(new Date().getMonth()+1)+'__月网站上传统计</td><td  colspan="4" style="text-align: left;">技术确认金额签字:</td></tr>'
       var row = "<tr>";
       for (var i = 0, l = ShowLabel.length; i < l; i++) {
-        row += "<td style='font-size: 12pt;font-weight: bold;'>" + ShowLabel[i].value + '</td>';
+        row += "<td style='font-size: 10pt;'>" + ShowLabel[i].value + '</td>';
       }
       //换行  
       excel += row + "</tr>";
       //设置数据  
       for (var i = 0; i < arrData.length; i++) {
-        var row = "<tr>";
-
-        row += '<td style="font-size:12pt">' + arrData[i][1].value + '</td>';
-        row += '<td style="font-size:12pt">' + arrData[i][16].value + '</td>';
-        row += '<td style="font-size:12pt">' + arrData[i][2].value + '</td>';
-        row += '<td style="font-size:12pt">' + arrData[i][3].value + '</td>';
-        row += '<td style="font-size:12pt">' + arrData[i][4].value + '</td>';
-        row += '<td style="font-size:12pt">' + arrData[i][5].value + '</td>';
-        row += '<td style="font-size:12pt">' + arrData[i][6].value + '</td>';
-        row += '<td style="font-size:12pt">' + arrData[i][7].value + '</td>';
-        row += '<td style="font-size:12pt"></td>';
-        row += '<td style="font-size:12pt">' + arrData[i][8].value + '</td>';
-        row += '<td style="font-size:12pt"></td>';
-        row += '<td style="font-size:12pt"></td>';
-        row += '<td style="font-size:12pt"></td>';
-        row += '<td style="font-size:12pt"></td>';
+        var row = '<tr style="height:16pt;line-height:16pt">';
+        row += '<td style="height:16pt;font-size:11pt;width:30px">' + i + '</td>';                                        //编号
+        row += '<td style="height:16pt;font-size:11pt;width:60px">' + arrData[i][1].value + '</td>';                      //分公司
+        row += '<td style="height:16pt;font-size:11pt;width:65px">' + arrData[i][2].value + '</td>';                      //商务
+        row += '<td style="height:16pt;font-size:11pt;width:65px">' + arrData[i][16].value.split('/')[0] + '</td>';       //设计
+        row += '<td style="height:16pt;font-size:11pt;width:65px">' + arrData[i][16].value.split('/')[1] + '</td>';                  //程序
+        row += '<td style="height:16pt;font-size:11pt;width:315px">' + arrData[i][3].value + '</td>';                                 //公司名称
+        row += '<td style="height:16pt;font-size:9pt;width:60px">' + arrData[i][4].value + '</td>';                                 //签单时间
+        row += '<td style="height:16pt;font-size:9pt;width:60px">' + arrData[i][5].value + '</td>';                                 //下单时间
+        row += '<td style="height:16pt;font-size:10pt;width:40px">' + arrData[i][6].value + '</td>';                                 //签单金额
+        row += '<td style="height:16pt;font-size:10pt;width:40px">' + arrData[i][7].value + '</td>';                                 //实到金额
+        row += '<td style="height:16pt;font-size:11pt;width:60px"></td>';                                                            //尾款
+        row += '<td style="height:16pt;font-size:11pt;width:65px">' + arrData[i][8].value + '</td>';                                 //类型
+        row += '<td style="height:16pt;font-size:11pt;width:50px"></td>';                                                            //工作量
+        row += '<td style="height:16pt;font-size:11pt;width:45px"></td>';                                                            //提成
+        row += '<td style="height:16pt;font-size:11pt;width:70px"></td>';                                                            //总监确认
+        row += '<td style="height:16pt;font-size:11pt;width:80px"></td>';                                                            //备注
         excel += row + "</tr>";
       }
       excel += "</table>";
@@ -254,7 +265,7 @@ export default {
       excelFile += "<x:ExcelWorksheets>";
       excelFile += "<x:ExcelWorksheet>";
       excelFile += "<x:Name>";
-      excelFile += "{worksheet}";
+      excelFile += "工作量表";
       excelFile += "</x:Name>";
       excelFile += "<x:WorksheetOptions>";
       excelFile += "<x:DisplayGridlines/>";
@@ -264,8 +275,17 @@ export default {
       excelFile += "</x:ExcelWorkbook>";
       excelFile += "</xml>";
       excelFile += "<![endif]-->";
+      excelFile += "<style>";
+      excelFile += "*{margin:0;padding:0;}td{border:thin solid #999;}"
+      excelFile +=`      <!-- @page
+        {mso-footer-data:"&C\\7B2C &P \\9875\\FF0C\\5171 &N \\9875";
+        margin:0.748in 0.195in 0.748in 0.195in;
+        mso-header-margin:0.91in;
+        mso-footer-margin:0.91in;}
+      -->`
+      excelFile += "</style>";
       excelFile += "</head>";
-      excelFile += "<body style=\"font-family:微软雅黑;\">";
+      excelFile += "<body style=\"font-family:微软雅黑;text-align: center;\">";
       excelFile += excel;
       excelFile += "</body>";
       excelFile += "</html>";

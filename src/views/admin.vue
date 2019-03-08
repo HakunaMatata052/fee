@@ -30,17 +30,26 @@
       v-loading="loading"
     >
       <el-table-column type="index" width="50"></el-table-column>
-      <el-table-column prop="fee" label="前端" width="80" show-overflow-tooltip sortable></el-table-column>
+      <el-table-column
+        prop="fee"
+        label="前端"
+        width="100"
+        :filters="presen"
+        :filter-method="filterHandler"
+        show-overflow-tooltip
+        sortable
+      ></el-table-column>
       <el-table-column prop="company" label="分公司" width="80" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="xgjs" label="相关技术" width="120" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="business" label="商务" width="80" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="designer" label="设计" width="80" show-overflow-tooltip sortable></el-table-column>
+      <el-table-column prop="programmer" label="程序" width="80" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="customer" label="公司名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qdate" label="签单时间" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="xdate" label="下单时间" width="100" show-overflow-tooltip></el-table-column>
       <el-table-column prop="qmoney" label="签单金额 " width="100" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="smoney" label="实到金额" width="100" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="smoney" label="实到金额" width="80" show-overflow-tooltip></el-table-column>
       <el-table-column prop="type" label="类型" width="100" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="date" label="分单时间" width="120" show-overflow-tooltip sortable></el-table-column>
+      <el-table-column prop="date" label="分单时间" width="100" show-overflow-tooltip sortable></el-table-column>
       <el-table-column label="静态" width="110">
         <template slot-scope="scope">
           <el-tag size="mini" v-if="scope.row.html==null">未上传</el-tag>
@@ -64,8 +73,8 @@
     </el-table>
     <el-dialog title="统计" :visible.sync="dialogTableVisible" @opened="drawLine" width="80%">
       <div style="display:flex;flex-wrap:wrap;">
-        <div id="myChart" :style="{width: '50%', height: '300px'}"></div>
-        <div id="myChart2" :style="{width: '50%', height: '300px'}"></div>
+        <div id="myChart" :style="{width: '30%', height: '300px'}"></div>
+        <div id="myChart2" :style="{width: '70%', height: '300px'}"></div>
         <div id="myChart3" :style="{width: '100%', height: '300px'}"></div>
         <div id="myChart4" :style="{width: '100%', height: '300px'}"></div>
       </div>
@@ -77,6 +86,7 @@
 export default {
   data() {
     return {
+      presen: [{ text: '王卓', value: '王卓' }, { text: '石婧', value: '石婧' }, { text: '宋文星', value: '宋文星' }, { text: '李强', value: '李强' }, { text: '魏永涛', value: '魏永涛' }],
       list: [],
       list_car: [],
       search: {
@@ -187,56 +197,94 @@ export default {
           }
         ]
       });
-      let name2 = [];
-      let name3 = [];
+      // let name2 = [];
+      // let name3 = [];
+      // for (var i = 0; i < name.length; i++) {
+      //   name2.push(name[i].name)
+      //   name3.push(name[i].value)
+      // }
+      // console.table(that.list)
+      var name2 = [];
       for (var i = 0; i < name.length; i++) {
-        name2.push(name[i].name)
-        name3.push(name[i].value)
+        var count = 0;
+        var tempArry = [];
+        for (var j = 0; j < that.list.length; j++) {
+          if (name[i].name === that.list[j].fee) {
+            if (that.list[j].html !== null) {
+              count++;
+            }
+          }
+        }
+        tempArry[0] = name[i].name;
+        tempArry[1] = name[i].value;
+        tempArry[2] = count;
+        tempArry[3] = name[i].value - count;
+        name2.push(tempArry)
       }
+      console.log(name2)
+      name2.unshift(['product', '下单数量', '完成数量', '未完成'])
+
+      // ['product', '下单数量', '完成数量'],
       // 绘制图表
       myChart2.setOption({
-        color: ['#3398DB'],
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-          }
+        color: ['#3398db', 'green', '#ec6400'],
+        legend: {},
+        tooltip: {},
+        dataset: {
+          source: name2
         },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: name2,
-            axisTick: {
-              alignWithLabel: true
-            },
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
+        xAxis: { type: 'category' },
+        yAxis: {},
         series: [
-          {
-            name: '数量',
-            type: 'bar',
-            barWidth: '60%',
-            data: name3,
-            label: {
-              normal: {
-                show: true,
-                position: 'top'
-              }
-            },
-          }
+          { type: 'bar' },
+          { type: 'bar' },
+          { type: 'bar' }
         ]
       });
+
+      // myChart2.setOption({
+      //   color: ['#3398DB'],
+      //   tooltip: {
+      //     trigger: 'axis',
+      //     axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+      //       type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+      //     }
+      //   },
+      //   grid: {
+      //     left: '3%',
+      //     right: '4%',
+      //     bottom: '3%',
+      //     containLabel: true
+      //   },
+      //   xAxis: [
+      //     {
+      //       type: 'category',
+      //       data: name2,
+      //       axisTick: {
+      //         alignWithLabel: true
+      //       },
+      //     }
+      //   ],
+      //   yAxis: [
+      //     {
+      //       type: 'value'
+      //     }
+      //   ],
+      //   series: [
+      //     {
+      //       name: '数量',
+      //       type: 'bar',
+      //       barWidth: '60%',
+      //       data: name3,
+      //       label: {
+      //         normal: {
+      //           show: true,
+      //           position: 'top'
+      //         }
+      //       },
+      //     }
+      //   ]
+      // });
 
 
       let name4 = [];
@@ -341,6 +389,13 @@ export default {
           }
         ]
       });
+
+
+
+    },
+    filterHandler(value, row, column) {
+      const property = column['property'];
+      return row[property] === value;
     },
     arrCheck(arr) {
       var newArr = [];
