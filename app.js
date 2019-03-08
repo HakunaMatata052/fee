@@ -142,14 +142,8 @@ function mm(mm) {
     switch (mm) {
         case 'lq9588':
             return '李强';
-        case 'gyl':
-            return '郭玉兰';
-        case '3.3':
-            return '马利丽';
         case '411323':
             return '石婧';
-        case 'fengyanru123':
-            return '冯燕'
         case '950410':
             return '王卓';
         case 'swx950925':
@@ -158,6 +152,8 @@ function mm(mm) {
             return '魏永涛';
         case '199471677':
             return '赵栋';
+        case '123lakala':
+            return '李旭丹';
         case 'hakunamatata52':
             return ''
         default:
